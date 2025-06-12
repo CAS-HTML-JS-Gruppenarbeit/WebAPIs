@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Physics Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="container">
+  <h1>Canvas Physics Demo</h1>
+  <div class="chooseBall">
+    <input type="radio" id="tennis" name="balltype" value="Tennis" checked="checked">
+    <label for="tennis">Tennisball</label><br>
+    <input type="radio" id="basketball" name="balltype" value="Basketball">
+    <label for="basketball">Basketball</label><br>
+    <input type="radio" id="medicineball" name="balltype" value="MedicineBall">
+    <label for="medicineball">Medizinball</label>
+    <!--    <button id="drawBall">Draw Ball</button>-->
+  </div>
+  <!-- Step 1: Add a canvas element to your HTML. -->
+  <canvas id="myCanvas" width="600" height="600">
+  </canvas>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
