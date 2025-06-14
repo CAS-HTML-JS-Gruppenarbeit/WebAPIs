@@ -16,3 +16,13 @@ canvas{
     margin-bottom: 20px;
     gap: 10px;
 }
+.values{
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    gap: 10px;
+    padding: 10px;
+}
+.parameters{
+    text-align: left;
+}

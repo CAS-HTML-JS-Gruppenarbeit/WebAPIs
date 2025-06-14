@@ -4,7 +4,7 @@ let balltype = document.querySelector('input[name="balltype"]:checked').value;
 balltypeRadioButtons.forEach(radio => {
     radio.addEventListener('change', function() {
         balltype = this.value;
-        console.log('Ball type changed to:', balltype);
+        //console.log('Ball type changed to:', balltype);
     });
 });
 
@@ -19,9 +19,9 @@ const balls = []
 function ballHitWall(ball) {
     //A collision has occured on any side of the canvas
     if(ball.x + ball.radius > 600 ||
-        ball.x - ball.radius < 20 ||
+        ball.x - ball.radius < 0 ||
         ball.y + ball.radius > 600 ||
-        ball.y - ball.radius < 20){
+        ball.y - ball.radius < 0){
         if(ball.timeDiff1){
             ball.timeDiff2 = new Date() - ball.timeDiff1;
             ball.timeDiff2 < 200 ? ball.shouldAudio = false : null;
@@ -34,17 +34,17 @@ function ballHitWall(ball) {
             //We set the X & Y coordinates first to prevent ball from getting stuck in the canvas border
             ball.x = 600 - ball.radius;
             ball.dx *= -1;
-        }else if(ball.x - ball.radius < 20){
+        }else if(ball.x - ball.radius < 0){
             //Left side of ball hits left side of canvas
-            ball.x = 20 + ball.radius;
+            ball.x = 0 + ball.radius;
             ball.dx *= -1;
         }else if(ball.y + ball.radius > 600){
             //Bottom of ball hits bottom of canvas
             ball.y = 600 - ball.radius;
             ball.dy *= -1;
-        }else if(ball.y - ball.radius < 20){
+        }else if(ball.y - ball.radius < 0){
             //Top of ball hits top of canvas
-            ball.y = 20 + ball.radius;
+            ball.y = 0 + ball.radius;
             ball.dy *= -1;
         }
 
@@ -99,14 +99,14 @@ function collide(index) {
 }
 //
 class Ball {
-    constructor(x, y, radius, angle, speed, color, gravity, friction) {
+    constructor(x, y, radius, angle, speed, color, gravity, friction, elasticity) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.dx = Math.cos(angle) * speed;
         this.dy = Math.sin(angle) * speed;
         this.gravity = gravity || 0.5;
-        this.elasticity = 0.5;
+        this.elasticity = elasticity || 0.5;
         this.friction = friction || 0.008;
         this.color = color;
         this.timeDiff1 = null;
@@ -165,11 +165,14 @@ canvas.addEventListener('click', function(event) {
     const ballradius = balltype === 'Tennis' ? 10 : balltype === 'Basketball' ? 25 : 30;
     const ballcolor = balltype === 'Tennis' ? '#ffbf00' : balltype === 'Basketball' ? '#ff8500' : '#3a1e15';
     const ballspeed = balltype === 'Tennis' ? 10 : balltype === 'Basketball' ? 9 : 8;
-    const ballfriction = balltype === 'Tennis' ? 0.002 : balltype === 'Basketball' ? 0.003 : 0.004;
-    const ballgravity = balltype === 'Tennis' ? 0.005 : balltype === 'Basketball' ? 0.1 : 0.3;
+    const ballfriction = balltype === 'Tennis' ? 0.01 : balltype === 'Basketball' ? 0.05 : 0.1;
+    const ballgravity = balltype === 'Tennis' ? 0.05 : balltype === 'Basketball' ? 0.1 : 0.3;
+    const ballelasticity = balltype === 'Tennis' ? 0.8 : balltype === 'Basketball' ? 0.6 : 0.4;
 
-    const createBall = new Ball(x, y, ballradius, Math.random() * 2 * Math.PI, ballspeed, ballcolor, ballgravity, ballfriction);
+    const createBall = new Ball(x, y, ballradius, 1, ballspeed, ballcolor, ballgravity, ballfriction, ballelasticity);
+//    const createBall = new Ball(x, y, ballradius, Math.random() * 2 * Math.PI, ballspeed, ballcolor, ballgravity, ballfriction, ballelasticity);
     //createBall.draw();
+    console.log('Neuer Ball', createBall);
     balls.push(createBall);
 
 
