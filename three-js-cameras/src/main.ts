@@ -1,41 +1,26 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-
-const {
-  Scene,
-  PerspectiveCamera,
-  OrthographicCamera,
-  CameraHelper,
-  WebGLRenderer,
-  Color,
-  BoxGeometry,
-  MeshStandardMaterial,
-  Mesh,
-  EdgesGeometry,
-  LineSegments,
-  LineBasicMaterial,
-  AmbientLight,
-  PointLight,
-} = THREE;
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // Scene, Cameras, Renderer
-const scene = new Scene();
-scene.background = new Color(0x222233);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x222233);
+
+/////////// CAMERAS ////////////
 
 // Perspective Camera
-const perspectiveCamera = new PerspectiveCamera(
-  75,
+const perspectiveCamera = new THREE.PerspectiveCamera(
+  50,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  100
 );
-perspectiveCamera.position.set(5, 5, 5);
+perspectiveCamera.position.set(0, 0, 10); // Move camera closer
 perspectiveCamera.lookAt(0, 0, 0);
 
 // Orthographic Camera
 const aspect = window.innerWidth / window.innerHeight;
 const d = 5;
-const orthoCamera = new OrthographicCamera(
+const orthoCamera = new THREE.OrthographicCamera(
   -d * aspect,
   d * aspect,
   d,
@@ -43,52 +28,96 @@ const orthoCamera = new OrthographicCamera(
   0.1,
   1000
 );
-orthoCamera.position.set(5, 5, 5);
+// const orthoCamera = new THREE.OrthographicCamera(
+//   -aspect,
+//   aspect,
+//   1,
+//   -1,
+//   0.1,
+//   1000
+// );
+orthoCamera.position.set(0, 0, 10);
 orthoCamera.lookAt(0, 0, 0);
 
 // Camera Helpers
-const perspectiveHelper = new CameraHelper(perspectiveCamera);
+const perspectiveHelper = new THREE.CameraHelper(perspectiveCamera);
 scene.add(perspectiveHelper);
-const orthoHelper = new CameraHelper(orthoCamera);
+const orthoHelper = new THREE.CameraHelper(orthoCamera);
 scene.add(orthoHelper);
 orthoHelper.visible = false; // Hide orthographic helper by default
 
 // Set active camera (switch between these two for demo)
 let activeCamera: THREE.Camera = perspectiveCamera;
 
-const renderer = new WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Controls for both cameras
 let controls = new OrbitControls(perspectiveCamera, renderer.domElement);
 
-// Geometry, Material, Mesh
-const geometry = new BoxGeometry();
-const material = new MeshStandardMaterial({ color: 0x00ff99 });
-const cube = new Mesh(geometry, material);
-scene.add(cube);
+/////////// OBJECTS ////////////
+
+// CUBE
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshStandardMaterial({
+  color: 0x00ff99,
+  metalness: 0.5,
+  roughness: 0.15,
+});
+const cube = new THREE.Mesh(geometry, material);
+cube.position.set(0, 0, 0); // Ensure cube is at origin
 
 // Add visible edges to the cube
-const edges = new EdgesGeometry(geometry);
-const line = new LineSegments(
+const edges = new THREE.EdgesGeometry(geometry);
+const line = new THREE.LineSegments(
   edges,
-  new LineBasicMaterial({ color: 0x000000, linewidth: 2 })
+  new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 })
 );
 cube.add(line);
+scene.add(cube);
 
-// Lighting
-const ambientLight = new AmbientLight(0xffffff, 0.5);
+// BALL
+const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+const sphereMaterial = new THREE.MeshStandardMaterial({
+  color: 0x3366ff,
+  metalness: 0.8,
+  roughness: 0.3,
+});
+const ball = new THREE.Mesh(sphereGeometry, sphereMaterial);
+ball.position.set(2, 0, -5); // Place ball behind the cube along the z-axis
+scene.add(ball);
+
+/////////// LIGHTNING ////////////
+
+// Add a soft ambient light for base illumination
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 scene.add(ambientLight);
-const pointLight = new PointLight(0xffffff, 1);
-pointLight.position.set(5, 5, 5);
-scene.add(pointLight);
+
+// Add a strong directional light from the top right
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+dirLight.position.set(5, 10, 7);
+dirLight.castShadow = true;
+scene.add(dirLight);
+
+// Add a warm point light from the left
+const pointLight1 = new THREE.PointLight(0xffaa55, 0.7, 30);
+pointLight1.position.set(-6, 4, 4);
+scene.add(pointLight1);
+
+// Add a cool point light from the back
+const pointLight2 = new THREE.PointLight(0x55aaff, 0.5, 30);
+pointLight2.position.set(0, 2, -10);
+scene.add(pointLight2);
 
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
-  // cube.rotation.x += 0.01;
-  // cube.rotation.y += 0.01;
+  // Animate the ball to circle around the cube
+  const time = performance.now() * 0.001; // seconds
+  const radius = 5;
+  ball.position.x = Math.cos(time) * radius;
+  ball.position.z = Math.sin(time) * radius;
   controls.update();
   renderer.render(scene, activeCamera);
 }
