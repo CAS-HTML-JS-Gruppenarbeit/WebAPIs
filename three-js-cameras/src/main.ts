@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Scene, Cameras, Renderer
 const scene = new THREE.Scene();
@@ -9,10 +9,10 @@ scene.background = new THREE.Color(0x222233);
 
 // Perspective Camera
 const perspectiveCamera = new THREE.PerspectiveCamera(
-  50,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  100
+    50,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100
 );
 perspectiveCamera.position.set(0, 0, 10); // Move camera closer
 perspectiveCamera.lookAt(0, 0, 0);
@@ -21,12 +21,12 @@ perspectiveCamera.lookAt(0, 0, 0);
 const aspect = window.innerWidth / window.innerHeight;
 const d = 5;
 const orthoCamera = new THREE.OrthographicCamera(
-  -d * aspect,
-  d * aspect,
-  d,
-  -d,
-  0.1,
-  1000
+    -d * aspect,
+    d * aspect,
+    d,
+    -d,
+    0.1,
+    1000
 );
 // const orthoCamera = new THREE.OrthographicCamera(
 //   -aspect,
@@ -61,9 +61,9 @@ let controls = new OrbitControls(perspectiveCamera, renderer.domElement);
 // CUBE
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshStandardMaterial({
-  color: 0x00ff99,
-  metalness: 0.5,
-  roughness: 0.15,
+    color: 0x00ff99,
+    metalness: 0.5,
+    roughness: 0.15,
 });
 const cube = new THREE.Mesh(geometry, material);
 cube.position.set(0, 0, 0); // Ensure cube is at origin
@@ -71,8 +71,8 @@ cube.position.set(0, 0, 0); // Ensure cube is at origin
 // Add visible edges to the cube
 const edges = new THREE.EdgesGeometry(geometry);
 const line = new THREE.LineSegments(
-  edges,
-  new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 })
+    edges,
+    new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 })
 );
 cube.add(line);
 scene.add(cube);
@@ -80,9 +80,9 @@ scene.add(cube);
 // BALL
 const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
 const sphereMaterial = new THREE.MeshStandardMaterial({
-  color: 0x3366ff,
-  metalness: 0.8,
-  roughness: 0.3,
+    color: 0x3366ff,
+    metalness: 0.8,
+    roughness: 0.3,
 });
 const ball = new THREE.Mesh(sphereGeometry, sphereMaterial);
 ball.position.set(2, 0, -5); // Place ball behind the cube along the z-axis
@@ -112,46 +112,49 @@ scene.add(pointLight2);
 
 // Animation Loop
 function animate() {
-  requestAnimationFrame(animate);
-  // Animate the ball to circle around the cube
-  const time = performance.now() * 0.001; // seconds
-  const radius = 5;
-  ball.position.x = Math.cos(time) * radius;
-  ball.position.z = Math.sin(time) * radius;
-  controls.update();
-  renderer.render(scene, activeCamera);
+    requestAnimationFrame(animate);
+    // Animate the ball to circle around the cube
+    const time = performance.now() * 0.001; // seconds
+    const radius = 5;
+    ball.position.x = Math.cos(time) * radius;
+    ball.position.z = Math.sin(time) * radius;
+    controls.update();
+    renderer.render(scene, activeCamera);
 }
 animate();
 
 // Handle window resize
-window.addEventListener("resize", () => {
-  const aspect = window.innerWidth / window.innerHeight;
-  perspectiveCamera.aspect = aspect;
-  perspectiveCamera.updateProjectionMatrix();
-  orthoCamera.left = -d * aspect;
-  orthoCamera.right = d * aspect;
-  orthoCamera.top = d;
-  orthoCamera.bottom = -d;
-  orthoCamera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+window.addEventListener('resize', () => {
+    const aspect = window.innerWidth / window.innerHeight;
+    perspectiveCamera.aspect = aspect;
+    perspectiveCamera.updateProjectionMatrix();
+    orthoCamera.left = -d * aspect;
+    orthoCamera.right = d * aspect;
+    orthoCamera.top = d;
+    orthoCamera.bottom = -d;
+    orthoCamera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // Press 'c' to switch cameras for demonstration
-window.addEventListener("keydown", (e) => {
-  if (e.key === "c") {
-    if (activeCamera === perspectiveCamera) {
-      activeCamera = orthoCamera;
-      perspectiveHelper.visible = false;
-      orthoHelper.visible = true;
-      controls.dispose();
-      controls = new OrbitControls(orthoCamera, renderer.domElement);
-    } else {
-      activeCamera = perspectiveCamera;
-      perspectiveHelper.visible = true;
-      orthoHelper.visible = false;
-      controls.dispose();
-      controls = new OrbitControls(perspectiveCamera, renderer.domElement);
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'c') {
+        if (activeCamera === perspectiveCamera) {
+            activeCamera = orthoCamera;
+            perspectiveHelper.visible = false;
+            orthoHelper.visible = true;
+            controls.dispose();
+            controls = new OrbitControls(orthoCamera, renderer.domElement);
+        } else {
+            activeCamera = perspectiveCamera;
+            perspectiveHelper.visible = true;
+            orthoHelper.visible = false;
+            controls.dispose();
+            controls = new OrbitControls(
+                perspectiveCamera,
+                renderer.domElement
+            );
+        }
     }
-  }
 });
 // By default, perspectiveCamera is active. Press 'c' to switch to orthographicCamera and back.
