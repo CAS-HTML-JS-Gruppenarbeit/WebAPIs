@@ -4,7 +4,6 @@ let balltype = document.querySelector('input[name="balltype"]:checked').value;
 balltypeRadioButtons.forEach(radio => {
     radio.addEventListener('change', function() {
         balltype = this.value;
-        //console.log('Ball type changed to:', balltype);
     });
 });
 
@@ -52,51 +51,6 @@ function ballHitWall(ball) {
     }
 }
 
-function ballHitBall(ball1, ball2) {
-    let collision = false;
-    let dx = ball1.x - ball2.x;
-    let dy = ball1.y - ball2.y;
-    //Modified pythagorous, because sqrt is slow
-    let distance = (dx * dx + dy * dy);
-    if(distance <= (ball1.radius + ball2.radius)*(ball1.radius + ball2.radius)){
-        collision = true;
-    }
-    return collision;
-}
-
-function collideBalls(ball1,ball2){
-    //It matters that we are getting the exact difference from ball 1 & ball 2
-    let dx = ball2.x - ball1.x;
-    let dy = ball2.y - ball1.y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    //Work out the normalized collision vector (direction only)
-    let vCollisionNorm = {x: dx / distance, y:dy/distance}
-    //Relative velocity of ball 2
-    let vRelativeVelocity = {x: ball1.dx - ball2.dx,y:ball1.dy - ball2.dy};
-    //Calculate the dot product
-    let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
-    //Don't do anything because balls are already moving out of each others way
-    if(speed < 0) return;
-    let impulse = 2 * speed / (ball1.mass + ball2.mass);
-    //Becuase we calculated the relative velocity of ball2. Ball1 needs to go in the opposite direction, hence a collision.
-    ball1.dx -= (impulse * ball2.mass * vCollisionNorm.x);
-    ball1.dy -= (impulse * ball2.mass * vCollisionNorm.y);
-    ball2.dx += (impulse * ball1.mass * vCollisionNorm.x);
-    ball2.dy += (impulse * ball1.mass * vCollisionNorm.y);
-    //Still have to account for elasticity
-    ball1.dy = (ball1.dy * ball1.elasticity);
-    ball2.dy = (ball2.dy * ball2.elasticity);
-}
-
-function collide(index) {
-    let ball = balls[index];
-    for(let j = index + 1; j < balls.length; j++){
-        let testBall = balls[j];
-        if(ballHitBall(ball,testBall)){
-            collideBalls(ball,testBall);
-        }
-    }
-}
 //
 class Ball {
     constructor(x, y, radius, angle, speed, color, gravity, friction, elasticity) {
@@ -144,12 +98,12 @@ function animate(){
     requestAnimationFrame(animate);
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    //Shoot the cannon balls
-    balls.forEach((ball, index) => {
+    //create balls
+    balls.forEach((ball) => {
         //Moves the balls
         ball.move();
+        //Check collision with walls
         ballHitWall(ball);
-       // collide(index);
         //Renders balls to canvas
         ball.draw();
     });
@@ -161,7 +115,6 @@ canvas.addEventListener('click', function(event) {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-
     const ballradius = balltype === 'Tennis' ? 10 : balltype === 'Basketball' ? 25 : 30;
     const ballcolor = balltype === 'Tennis' ? '#ffbf00' : balltype === 'Basketball' ? '#ff8500' : '#3a1e15';
     const ballspeed = balltype === 'Tennis' ? 10 : balltype === 'Basketball' ? 9 : 8;
@@ -169,12 +122,9 @@ canvas.addEventListener('click', function(event) {
     const ballgravity = balltype === 'Tennis' ? 0.05 : balltype === 'Basketball' ? 0.1 : 0.3;
     const ballelasticity = balltype === 'Tennis' ? 0.8 : balltype === 'Basketball' ? 0.6 : 0.4;
 
-    const createBall = new Ball(x, y, ballradius, 1, ballspeed, ballcolor, ballgravity, ballfriction, ballelasticity);
-//    const createBall = new Ball(x, y, ballradius, Math.random() * 2 * Math.PI, ballspeed, ballcolor, ballgravity, ballfriction, ballelasticity);
-    //createBall.draw();
-    console.log('Neuer Ball', createBall);
-    balls.push(createBall);
+    const createBall = new Ball(x, y, ballradius, 5, ballspeed, ballcolor, ballgravity, ballfriction, ballelasticity);
 
+    balls.push(createBall);
 
 });
 
