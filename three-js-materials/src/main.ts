@@ -52,20 +52,77 @@ let controls = new OrbitControls(perspectiveCamera, renderer.domElement);
 /////////// OBJECTS ////////////
 
 // PLANE
-// const planegeometry = new THREE.PlaneGeometry(20,20);
-// const planematerial = new THREE.MeshStandardMaterial({
-//     color: 0x00ff99,
-//     metalness: 0.5,
-//     roughness: 0.15,
-// });
-// const plane = new THREE.Mesh(planegeometry, planematerial);
-// plane.position.set(0, 0, 0);
+ const planegeometry = new THREE.PlaneGeometry(5,5);
+ const planematerial = new THREE.MeshBasicMaterial({
+    color: 0x00ff00, // Grün
+    wireframe: false // Drahtgitterdarstellung
 
-// plane.rotation.x = -Math.PI / 2;
-// scene.add(plane);
+ });
+ const plane1 = new THREE.Mesh(planegeometry, planematerial);
+ plane1.position.set(-20, 0, 0);
 
-const planegeometry2 = new THREE.PlaneGeometry(20,20);
+ plane1.rotation.x = -Math.PI / 2;
+ scene.add(plane1);
 
+ 
+// PLANE 2
+ const planegeometry2 = new THREE.PlaneGeometry(5,5);
+ const planematerial2 = new THREE.MeshStandardMaterial({
+    color: 0xff0000, // Rot
+    metalness: 0.7, // Metallischer Glanz
+    roughness: 0.3 // Oberfläche mit wenig Rauheit
+
+
+ });
+ const plane2 = new THREE.Mesh(planegeometry2, planematerial2);
+ plane2.position.set(-15, 0, 0);
+
+ plane2.rotation.x = -Math.PI / 2;
+ scene.add(plane2);
+
+ // PLANE 3
+ const planegeometry3 = new THREE.PlaneGeometry(5,5);
+ const planematerial3 = new THREE.MeshPhongMaterial({
+    color: 0x0000ff, // Blau
+    shininess: 100, // Starke Glanzlichter
+    specular: 0x888888 // Farbe der Reflexionen
+
+ });
+ const plane3 = new THREE.Mesh(planegeometry3, planematerial3);
+ plane3.position.set(-10, 0, 0);
+
+ plane3.rotation.x = -Math.PI / 2;
+ scene.add(plane3);
+
+ // PLANE 4
+ const planegeometry4 = new THREE.PlaneGeometry(5,5);
+ const planematerial4 = new THREE.MeshLambertMaterial({
+    color: 0xffff00 // Gelb
+
+ });
+ const plane4 = new THREE.Mesh(planegeometry4, planematerial4);
+ plane4.position.set(-5, 0, 0);
+
+ plane4.rotation.x = -Math.PI / 2;
+ scene.add(plane4);
+
+ // PLANE 5
+ const planegeometry5 = new THREE.PlaneGeometry(5,5);
+ const planematerial5 = new THREE.MeshPhysicalMaterial({
+    color: 0xff00ff, // Pink
+    metalness: 0.9, 
+    roughness: 0.1, 
+    clearcoat: 1.0, // Extra Glanzschicht
+    clearcoatRoughness: 0.2
+
+ });
+ const plane5 = new THREE.Mesh(planegeometry5, planematerial5);
+ plane5.position.set(0, 0, 0);
+
+ plane5.rotation.x = -Math.PI / 2;
+ scene.add(plane5);
+
+ // PLANE 6
 const loader = new THREE.TextureLoader();
 const woodColorMap = loader.load('./assets/pictures/wood_floor_worn_diff_1k.png');
 const woodNormalMap = loader.load('./assets/pictures/wood_floor_worn_nor_gl_1k.png');
@@ -76,9 +133,9 @@ const woodDisplacementMap = loader.load('./assets/pictures/wood_floor_worn_disp_
 woodColorMap.wrapS = THREE.RepeatWrapping;
 woodColorMap.wrapT = THREE.RepeatWrapping;
 
-woodColorMap.repeat.set(4, 4); // 4x4 Wiederholungen
+woodColorMap.repeat.set(5, 5); // 4x4 Wiederholungen
 
-const geometry = new THREE.PlaneGeometry(10, 10, 128, 128); // hohe Auflösung für Displacement
+const geometry = new THREE.PlaneGeometry(25, 25, 128, 128); // hohe Auflösung für Displacement
 const material = new THREE.MeshStandardMaterial({
   map: woodColorMap,
   normalMap: woodNormalMap,
@@ -90,10 +147,11 @@ const material = new THREE.MeshStandardMaterial({
   roughness: 1.0
 });
 
-const plane = new THREE.Mesh(geometry, material);
-plane.rotation.x = -Math.PI / 2; // Als Bodenfläche
-plane.receiveShadow = true;
-scene.add(plane);
+const plane6 = new THREE.Mesh(geometry, material);
+plane6.rotation.x = -Math.PI / 2; // Als Bodenfläche
+plane6.receiveShadow = true;
+plane6.position.set(-10, 0, 15);
+scene.add(plane6);
 
 /////////// LIGHTNING ////////////
 
@@ -101,36 +159,42 @@ const axesHelper = new THREE.AxesHelper( 5 );
 scene.add( axesHelper );
 
 // Add a soft ambient light for base illumination
-//const ambientLight = new THREE.AmbientLight(0x2600ff, 0.2);
-//scene.add(ambientLight);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+scene.add(ambientLight);
 
 // Add a strong directional light from the top right
-//const dirLight = new THREE.DirectionalLight(0xff6200, 10);
-//dirLight.position.set(5, 10, 7);
-// dirLight.position.set(1, 1, 1);
-// dirLight.castShadow = true;
-// scene.add(dirLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+dirLight.position.set(5, 10, 7);
+dirLight.position.set(1, 1, 1);
+dirLight.castShadow = true;
+scene.add(dirLight);
 
-// Point Light setup
-// const pointLight1 = new THREE.PointLight(0x00ff1a, 50, 0);
-// pointLight1.castShadow = true
-// pointLight1.position.set(-10, 2, 0);
-// scene.add(pointLight1);
+// Point Lights setup
+const pointLight1 = new THREE.PointLight(0xffffff, 50, 50);
+pointLight1.castShadow = true
+pointLight1.position.set(-15, 3, 0);
+scene.add(pointLight1);
+
+const pointLight2 = new THREE.PointLight(0xffffff, 50, 50);
+pointLight2.castShadow = true
+pointLight2.position.set(0, 3, 0);
+scene.add(pointLight2);
 
 // const pointLight2 = new THREE.PointLight(0xff0000, 50, 0);
 // pointLight2.castShadow = true
 // pointLight2.position.set(10, 2, 0);
 // scene.add(pointLight2);
 
-const spotLight = new THREE.SpotLight(0xffffff, 20); // Farbe, Intensität
-spotLight.position.set(2, 5, 2); // Position über dem Objekt
-spotLight.angle = Math.PI / 3;  // Lichtkegel
-spotLight.penumbra = 0.2;       // Weiche Kanten
-spotLight.decay = 2;            // Lichtabfall mit Entfernung
-spotLight.distance = 60;        // Wie weit das Licht reicht
+// Spotlight setup
+// const spotLight = new THREE.SpotLight(0xffffff, 20); // Farbe, Intensität
+// spotLight.position.set(2, 5, 2); // Position über dem Objekt
+// spotLight.angle = Math.PI / 3;  // Lichtkegel
+// spotLight.penumbra = 0.2;       // Weiche Kanten
+// spotLight.decay = 2;            // Lichtabfall mit Entfernung
+// spotLight.distance = 60;        // Wie weit das Licht reicht
 
-spotLight.castShadow = true;
-scene.add(spotLight)
+// spotLight.castShadow = true;
+// scene.add(spotLight)
 
 // Animation Loop
 function animate() {
