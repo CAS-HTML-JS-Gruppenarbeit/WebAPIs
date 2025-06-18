@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GUI } from 'lil-gui'
 
 // Scene, Cameras, Renderer
 const scene = new THREE.Scene();
@@ -204,6 +205,44 @@ function animate() {
     controls.update();
     renderer.render(scene, activeCamera);
 }
+
+
+// Beispielmaterial und Mesh
+const guimaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, roughness: 0.5, metalness: 0.5 });
+const guimesh = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), guimaterial);
+guimesh.position.set(-10, 1.5,-3);
+scene.add(guimesh); // Hier wird das Mesh zur Szene hinzugefügt
+
+
+// GUI setup
+const gui = new GUI();
+
+const materialParams = {
+    color: guimaterial.color.getHex(),
+    roughness: guimaterial.roughness,
+    metalness: guimaterial.metalness,
+    wireframe: guimaterial.wireframe
+};
+
+ 
+const materialFolder = gui.addFolder('Material');
+materialFolder.addColor(materialParams, 'color').onChange(value => {
+    guimaterial.color.setHex(value);
+});
+materialFolder.add(materialParams, 'roughness', 0, 1).onChange(value => {
+    guimaterial.roughness = value;
+});
+materialFolder.add(materialParams, 'metalness', 0, 1).onChange(value => {
+    guimaterial.metalness = value;
+});
+materialFolder.add(materialParams, 'wireframe').onChange(value => {
+    guimaterial.wireframe = value;
+});
+
+materialFolder.open();
+
+
+
 animate();
 
 // Handle window resize
