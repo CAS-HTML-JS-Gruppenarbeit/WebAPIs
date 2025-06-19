@@ -1,3 +1,5 @@
+// Inspration / Stole from: https://codepen.io/LFCProductions/pen/PoWVBdw
+
 // Check the type of selected ball
 const balltypeRadioButtons = document.querySelectorAll('input[name="balltype"]');
 let balltype = document.querySelector('input[name="balltype"]:checked').value;

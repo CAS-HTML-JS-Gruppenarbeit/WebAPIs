@@ -1,2 +1,2 @@
 # WebAPIs
-Codebeispielen Präsentation
+Code Beispiele Präsentation Canvas & WebGL + Three.js
