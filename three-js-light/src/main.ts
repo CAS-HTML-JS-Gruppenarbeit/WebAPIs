@@ -51,6 +51,8 @@ let activeCamera: THREE.Camera = perspectiveCamera;
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 // Controls for both cameras
@@ -65,7 +67,9 @@ const material = new THREE.MeshStandardMaterial({
     metalness: 0.5,
     roughness: 0.15,
 });
+
 const cube = new THREE.Mesh(geometry, material);
+cube.castShadow = true; // Enable shadow casting for the cube
 cube.position.set(0, 0, 0); // Ensure cube is at origin
 
 // PLANE
@@ -77,6 +81,7 @@ const planematerial = new THREE.MeshStandardMaterial({
 });
 const plane = new THREE.Mesh(planegeometry, planematerial);
 plane.position.set(0, -0.5, 0); // Ensure cube is at origin
+plane.receiveShadow = true;
 
 plane.rotation.x = -Math.PI / 2;
 
@@ -100,6 +105,7 @@ const sphereMaterial = new THREE.MeshStandardMaterial({
 });
 const ball = new THREE.Mesh(sphereGeometry, sphereMaterial);
 ball.position.set(2, 0, -5); // Place ball behind the cube along the z-axis
+ball.castShadow = true; // Enable shadow casting for the ball
 scene.add(ball);
 
 /////////// LIGHTNING ////////////
@@ -108,13 +114,12 @@ const axesHelper = new THREE.AxesHelper( 5 );
 scene.add( axesHelper );
 
 // Add a soft ambient light for base illumination
-//const ambientLight = new THREE.AmbientLight(0x2600ff, 0.2);
-//scene.add(ambientLight);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+scene.add(ambientLight);
 
 // Add a strong directional light from the top right
-//const dirLight = new THREE.DirectionalLight(0xff6200, 10);
-//dirLight.position.set(5, 10, 7);
-// dirLight.position.set(1, 1, 1);
+// const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+// dirLight.position.set(5, 10, 7);
 // dirLight.castShadow = true;
 // scene.add(dirLight);
 
